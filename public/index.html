@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum ERC20 Scanner - Bubble Map</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="flex: 1;">
+                    <h1>🔍 Ethereum ERC20 Token Scanner</h1>
+                    <p class="subtitle">Token: <span id="token-address">0x970a341B4E311A5c7248Dc9c3d8d4f35fEdFA73e</span></p>
+                    <div class="stats">
+                        <span id="total-addresses">0</span> adresses | 
+                        <span id="total-transfers">0</span> transfers |
+                        <span id="total-groups">0</span> groupes connectés
+                    </div>
+                </div>
+                <button id="dark-mode-toggle" class="dark-mode-btn" title="Basculer le mode sombre">🌙</button>
+            </div>
+        </header>
+        
+        <div id="loading" class="loading">
+            <p>Chargement des données...</p>
+        </div>
+        
+        <div id="visualization" class="visualization hidden">
+            <div class="filter-controls">
+                <div class="search-box">
+                    <input type="text" id="address-search" placeholder="Rechercher une adresse..." autocomplete="off">
+                    <button id="clear-search" class="clear-btn" style="display: none;">×</button>
+                </div>
+                <div class="depth-control">
+                    <label>
+                        <span>Profondeur de recherche:</span>
+                        <input type="number" id="search-depth" min="1" max="10" value="10" style="width: 60px; margin-left: 10px; padding: 4px;">
+                    </label>
+                </div>
+                <label>
+                    <input type="checkbox" id="hide-out-bubbles" checked>
+                    <span>Masquer les bulles avec balance à 0</span>
+                </label>
+                <div class="size-filter">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">
+                        Filtrer par taille de bulle:
+                    </label>
+                    <div class="double-slider-container">
+                        <div class="slider-wrapper">
+                            <input type="range" id="size-filter-min" min="0" max="100" value="0" class="size-slider">
+                            <input type="range" id="size-filter-max" min="0" max="100" value="100" class="size-slider">
+                        </div>
+                        <div class="slider-values">
+                            <span id="size-filter-min-value">0</span>
+                            <span> - </span>
+                            <span id="size-filter-max-value">100</span>
+                            <span>%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-filter">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">
+                        Timeline (navigation temporelle):
+                    </label>
+                    <div class="timeline-container">
+                        <div class="timeline-controls">
+                            <button id="timeline-reverse" class="timeline-btn" title="Inverser la direction">
+                                ⏪
+                            </button>
+                            <button id="timeline-play" class="timeline-btn" title="Play/Pause">
+                                ▶️
+                            </button>
+                            <input type="range" id="timeline-slider" min="0" max="100" value="100" class="timeline-slider">
+                        </div>
+                        <div class="timeline-values">
+                            <span id="timeline-value">Toutes les données</span>
+                            <span id="timeline-block">Block: -</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="show-labels-only" class="filter-btn">Masquer tout sauf Labels</button>
+                <button id="show-pad-only" class="filter-btn">Afficher uniquement PAD -</button>
+            </div>
+            <div id="tooltip" class="tooltip hidden"></div>
+            <svg id="bubble-map"></svg>
+        </div>
+        
+        <div id="info-panel" class="info-panel hidden">
+            <button id="close-info" class="close-btn">×</button>
+            <h2>Détails de l'adresse</h2>
+            <div class="info-content">
+                <p><strong>Address:</strong> <span id="info-address" class="address"></span></p>
+                <p><strong>Total IN:</strong> <span id="info-in"></span></p>
+                <p><strong>Total OUT:</strong> <span id="info-out"></span></p>
+                <p><strong>Balance nette:</strong> <span id="info-balance"></span></p>
+                <div class="transfers-list">
+                    <h3>Tous les transfers</h3>
+                    <div id="info-transfers"></div>
+                    <div id="transfers-pagination" style="margin-top: 15px; display: none;">
+                        <button id="prev-page" style="padding: 5px 15px; margin-right: 10px; cursor: pointer;">← Précédent</button>
+                        <span id="page-info" style="margin: 0 10px;"></span>
+                        <button id="next-page" style="padding: 5px 15px; margin-left: 10px; cursor: pointer;">Suivant →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+
